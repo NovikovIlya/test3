@@ -18,9 +18,9 @@ export const VacancyRequestItem = (props: {
 
 	return (
 		<>
-			<div className="w-full mb-[12px] flex justify-between items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
-				<p className="w-[388px]">{props.vacancyTitle}</p>
-				<p className="w-[388px] ml-[60px]">
+			<div className="w-full mb-[12px] flex items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
+				<p className="w-[40%]">{props.vacancyTitle}</p>
+				<p className="w-[10%] ml-[10%]">
 					{props.action === 'UPDATE'
 						? 'Редактирование'
 						: props.action === 'CREATE'
@@ -66,7 +66,7 @@ export const VacancyRequestItem = (props: {
 										})
 							  }
 					}
-					className="font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
+					className="max-w-[15%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black ml-auto"
 				>
 					Подробнее
 				</Button>

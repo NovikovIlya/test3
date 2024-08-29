@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom'
 
 import { useGetSeekerRespondsQuery } from '../../../store/api/serviceApi'
+import VacancyView from '../jobSeeker/VacancyView'
 
 import { ChatPage } from './ChatPage'
 import { ChatPreview } from './ChatPreview'
@@ -19,6 +20,7 @@ export const Chat = () => {
 		return (
 			<ChatPreview
 				respondId={resp.id}
+				vacancyId={resp.vacancyId}
 				respName={resp.name}
 				checkableStatus={resp.status}
 				key={resp.id}
@@ -29,20 +31,25 @@ export const Chat = () => {
 	return (
 		<>
 			{' '}
-			<div className="-mx-14 -mt-14 flex">
-				<div className=" shadowNav bg-white relative z-[5]">
-					<div className="sticky top-[80px]">
-						<div className="">
-							<p className="pl-[53px] pt-14 pb-[40px] font-content-font font-normal text-black text-[20px]/[20px] ">
-								Все отклики
-							</p>
+			<div className="bg-[#F5F8FB] flex w-full">
+				{!pathname.includes('/services/myresponds/chat/vacancyview') && (
+					<div className=" shadowNav bg-white relative z-[5]">
+						<div className="sticky top-[80px]">
+							<div className="">
+								<p className="pl-[53px] pt-14 pb-[40px] font-content-font font-normal text-black text-[20px]/[20px] ">
+									Все отклики
+								</p>
+							</div>
+							<ul className="h-[500px] w-[461px] flex flex-col gap-4 overflow-auto">
+								{handleList}
+							</ul>
 						</div>
-						<ul className="h-[500px] w-[461px] flex flex-col gap-4 overflow-auto">
-							{handleList}
-						</ul>
 					</div>
-				</div>
+				)}
 				{pathname.match('services/myresponds/chat/id/*') && <ChatPage />}
+				{pathname.includes('/services/myresponds/chat/vacancyview') && (
+					<VacancyView type="CHAT" />
+				)}
 			</div>
 		</>
 	)

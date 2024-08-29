@@ -1,13 +1,19 @@
 import clsx from 'clsx'
 import { forwardRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import { ArrowToTheRight } from '../../../assets/svg/ArrowToTheRight'
 import { MessageReadSvg } from '../../../assets/svg/MessageReadSvg'
 import { MessageUnreadSvg } from '../../../assets/svg/MessageUnreadSvg'
 import { useAppSelector } from '../../../store'
+
 import { useAnswerToInivitationMainTimeMutation,
 		 useAnswerToInvitationReserveTimeRequestMutation,
-		 useAnswerEmploymentRequestMutation} from '../../../store/api/serviceApi'
+		 useAnswerEmploymentRequestMutation } from '../../../store/api/serviceApi'
+import { useLazyGetVacancyViewQuery } from '../../../store/api/serviceApi'
+import { setCurrentVacancy } from '../../../store/reducers/CurrentVacancySlice'
+
 import { ChatMessageType } from '../../../store/reducers/type'
 
 import { ChatMessageFile } from './ChatMessageFile'
@@ -19,10 +25,15 @@ export const ChatMessage = forwardRef<Ref, Props>((props, ref) => {
 	const { user } = useAppSelector(state => state.auth)
 	const { vacancyTitle } = useAppSelector(state => state.currentVacancyName)
 	const { respondId } = useAppSelector(state => state.respondId)
+	const { currentVacancyId } = useAppSelector(state => state.currentVacancyId)
 	const isSeeker = user?.roles[0].type === 'STUD'
 	const isEmpDep = user?.roles.find(role => role.type === 'EMPL')
 
 	const [answerMainTime] = useAnswerToInivitationMainTimeMutation()
+	const [getVacancy, result] = useLazyGetVacancyViewQuery()
+
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const [answerReserveTime] = useAnswerToInvitationReserveTimeRequestMutation()
 	const [answerEmploymentRequest] = useAnswerEmploymentRequestMutation()
 
@@ -48,13 +59,27 @@ export const ChatMessage = forwardRef<Ref, Props>((props, ref) => {
 				)}
 			>
 				{props.msgData.type === 'RESPOND' && (
-					<div className="cursor-pointer" onClick={() => {}}>
-						<div className="flex items-center justify-between">
+					<div
+						className="cursor-pointer"
+						onClick={() => {
+							getVacancy(currentVacancyId)
+								.unwrap()
+								.then(result => {
+									dispatch(setCurrentVacancy(result))
+									isEmpDep
+										? navigate('/services/personnelaccounting/chat/vacancyview')
+										: navigate('/services/myresponds/chat/vacancyview')
+								})
+						}}
+					>
+						<div className="flex items-center">
 							<div>
 								<p className="font-bold">Отклик на вакансию</p>
 								<p>{vacancyTitle}</p>
 							</div>
-							<ArrowToTheRight />
+							<div className="ml-auto">
+								<ArrowToTheRight />
+							</div>
 						</div>
 						<div className="h-[1px] bg-black bg-opacity-[24%] mt-[16px]"></div>
 					</div>
@@ -128,7 +153,19 @@ export const ChatMessage = forwardRef<Ref, Props>((props, ref) => {
 			)}
 			*/}
 			{props.msgData.type === 'INVITATION' && (
-				<div className="mt-[24px] max-w-[50%] grid grid-cols-2 grid-rows-[40px_40px] gap-[20px]">
+				<div
+					className={clsx(
+						'mt-[24px] w-[50%] grid grid-cols-2 grid-rows-[40px_40px] gap-[20px]',
+						{
+							'self-start':
+								(props.msgData.sender === 'SEEKER' && isEmpDep) ||
+								(props.msgData.sender === 'PERSONNEL_DEPARTMENT' && !isEmpDep),
+							'self-end':
+								(props.msgData.sender === 'SEEKER' && !isEmpDep) ||
+								(props.msgData.sender === 'PERSONNEL_DEPARTMENT' && isEmpDep)
+						}
+					)}
+				>
 					<button
 						onClick={() => {
 							answerMainTime({ id: respondId, ans: 'YES' })

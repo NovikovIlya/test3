@@ -7,10 +7,13 @@ import { usePostVacancyRespondMutation } from '../../../store/api/serviceApi'
 import ArrowIcon from './ArrowIcon'
 import { ResponseForm } from './ResponceForm'
 
-export default function VacancyView() {
+export default function VacancyView(props: { type: 'CATALOG' | 'CHAT' }) {
+	const { user } = useAppSelector(state => state.auth)
 	const { currentVacancy } = useAppSelector(state => state.currentVacancy)
+	const { chatId } = useAppSelector(state => state.chatId)
 	const navigate = useNavigate()
 	const [getVacancyRespond, respond] = usePostVacancyRespondMutation()
+	const isEmpDep = user?.roles.find(role => role.type === 'EMPL')
 
 	let responsibilities: string = ''
 	let responsibilitiesArr: RegExpMatchArray | null = null
@@ -77,11 +80,20 @@ export default function VacancyView() {
 
 	return (
 		<>
-			<div id="wrapper" className="pl-[54px] pr-[54px] pt-[60px]">
+			<div
+				id="wrapper"
+				className={`pl-[54px] pr-[54px] ${
+					props.type === 'CHAT' && 'mt-[120px]'
+				}`}
+			>
 				<div className="flex">
 					<button
 						onClick={() => {
-							navigate('/services/jobseeker/catalog')
+							props.type === 'CATALOG'
+								? navigate('/services/jobseeker/catalog')
+								: isEmpDep
+								? navigate(`/services/personnelaccounting/chat/id/${chatId}`)
+								: navigate(`/services/myresponds/chat/id/${chatId}`)
 						}}
 						className="bg-white h-[38px] w-[46px] pt-[12px] pb-[12px] pr-[16px] pl-[16px] rounded-[50px] border border-black cursor-pointer"
 					>
@@ -101,7 +113,7 @@ export default function VacancyView() {
 					<p className="w-[106px] font-content-font font-bold text-black text-[18px]/[21px]">
 						Заработная плата
 					</p>
-					<ResponseForm />
+					{props.type === 'CATALOG' ? <ResponseForm /> : <></>}
 					<p className="font-content-font font-normal text-black text-[18px]/[21px] whitespace-nowrap">
 						{currentVacancy !== null ? currentVacancy.acf.experience : ''}
 					</p>

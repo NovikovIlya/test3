@@ -1,6 +1,7 @@
 import { Button } from 'antd'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import SockJS from 'sockjs-client'
 // const Stomp = require('stompjs/lib/stomp').Stomp
 import Stomp from 'stompjs'
@@ -11,6 +12,7 @@ import {
 	usePostChatMessageMutation,
 	useReadChatMessageMutation
 } from '../../../store/api/serviceApi'
+import { openChat } from '../../../store/reducers/ChatRespondStatusSlice'
 import { setChatId } from '../../../store/reducers/chatIdSlice'
 import {
 	ChatMessageDateDisplayEnum,
@@ -63,6 +65,8 @@ export const ChatPage = () => {
 	const [messages, setMessages] = useState<ChatMessageType[]>([])
 
 	const [sessionId, setSessionId] = useState<string>('')
+
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		setLastMessageId(0)
@@ -128,6 +132,9 @@ export const ChatPage = () => {
 						sessionId: sessionId,
 						role: isEmpDemp ? 'PERSONNEL_DEPARTMENT' : 'SEEKER'
 					})
+				}
+				if (msgBody.message.type === 'INVITATION') {
+					dispatch(openChat())
 				}
 				msgBody.type === 'READ' &&
 					(msgBody.message.ids as number[]).map(id =>
@@ -314,7 +321,7 @@ export const ChatPage = () => {
 			<div className="flex flex-col w-full">
 				<div
 					ref={chatPageRef}
-					className="w-full h-full flex flex-col pt-[60px] pr-[85px] pl-[40px] overflow-scroll"
+					className="w-full h-full flex flex-col pt-[60px] pr-[40px] pl-[40px] overflow-scroll"
 				>
 					<div
 						className="h-[1px]"
@@ -328,7 +335,7 @@ export const ChatPage = () => {
 								((msgDate.current = msg.sendDate.substring(0, 10)),
 								console.log(msg.sendDate.substring(0, 10)),
 								(
-									<div className="self-center font-content-font font-normal text-black text-[14px]/[16.8px] opacity-60">
+									<div className="self-center font-content-font font-normal text-black text-[14px]/[16.8px] opacity-60 mt-[60px] mb-[30px]">
 										{parseInt(msg.sendDate.substring(8, 10)) +
 											' ' +
 											ChatMessageDateDisplayEnum[
@@ -359,7 +366,7 @@ export const ChatPage = () => {
 						</p>
 					</div> */}
 					{ChatStatus.chatClosed && (
-						<div className="mt-auto mb-[40px] text-center font-content-font font-normal text-[16px]/[16px] text-black text-opacity-40">
+						<div className="mt-auto py-[10px] text-center font-content-font font-normal text-[16px]/[16px] text-black text-opacity-40">
 							Вы сможете писать в чат после того, как руководитель пригласит вас
 							на собеседование
 						</div>

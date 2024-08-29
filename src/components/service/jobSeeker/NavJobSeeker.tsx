@@ -14,7 +14,7 @@ export const NavJobSeeker = () => {
 			<WrapperForServices>
 				{pathname.includes('/services/jobseeker/catalog') && <Catalog />}
 				{pathname.includes('/services/jobseeker/vacancyview') && (
-					<VacancyView />
+					<VacancyView type="CATALOG" />
 				)}
 			</WrapperForServices>
 		</>

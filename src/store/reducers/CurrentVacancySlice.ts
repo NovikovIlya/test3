@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { VacancyViewResponceType } from './type'
+import { VacancyViewResponceType } from '../reducers/type'
 
 const initialState: { currentVacancy: VacancyViewResponceType | null } = {
 	currentVacancy: null

@@ -224,6 +224,7 @@ export enum respondStatus {
 
 export type RespondItemType = {
 	id: number
+	vacancyId: number
 	name: string
 	respondDate: string
 	status: string
@@ -362,8 +363,6 @@ export type VacancyRequestType = {
 	responsibilities: string
 	skills: string
 	conditions: string
-	category: string
-	direction: string
 }
 
 export type VacancyRequestItemType = {
@@ -386,9 +385,9 @@ export type VacancyRequestViewType = {
 	oldData: VacancyRequestType | null
 }
 
-export type InterviewRequestType ={
-	respondId : number,
-	date : string,
+export type InterviewRequestType = {
+	respondId: number
+	date: string
 	format: string
 }
 

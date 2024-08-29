@@ -14,9 +14,9 @@ export const RespondItem = ({
 	const dispatch = useDispatch()
 
 	return (
-		<div className="w-full mb-[12px] flex justify-between items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
-			<p className="w-[388px]">{vacancyTitle}</p>
-			<p>{respondsCount}</p>
+		<div className="w-full mb-[12px] flex items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
+			<p className="w-[35%]">{vacancyTitle}</p>
+			<p className="ml-[17%] w-[12%]">{respondsCount}</p>
 			<Button
 				onClick={() => {
 					dispatch(setCurrentVacancyName(vacancyTitle))
@@ -24,7 +24,7 @@ export const RespondItem = ({
 						`/services/personnelaccounting/responds/byvacancy/${vacancyId}`
 					)
 				}}
-				className="font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
+				className="ml-[15%] max-w-[15%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
 			>
 				Посмотреть
 			</Button>

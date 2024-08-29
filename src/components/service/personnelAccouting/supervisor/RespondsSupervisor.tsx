@@ -34,7 +34,7 @@ export const RespondsSupervisor = () => {
 					<h3 className="w-[25%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
 						Соискатель
 					</h3>
-					<h3 className="ml-[5%] w-[15%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
+					<h3 className="ml-[5%] w-[25%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
 						Вакансия
 					</h3>
 					<h3 className="ml-[5%] w-[8%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">

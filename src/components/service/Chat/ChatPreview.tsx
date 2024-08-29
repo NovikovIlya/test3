@@ -14,19 +14,24 @@ import {
 	openChat
 } from '../../../store/reducers/ChatRespondStatusSlice'
 import { setRespondId } from '../../../store/reducers/CurrentRespondIdSlice'
+import { setCurrentVacancyId } from '../../../store/reducers/CurrentVacancyIdSlice'
 import { setCurrentVacancyName } from '../../../store/reducers/CurrentVacancyNameSlice'
 import { setChatId } from '../../../store/reducers/chatIdSlice'
 import { respondStatus } from '../../../store/reducers/type'
 
 export const ChatPreview = (props: {
 	respondId: number
+	vacancyId: number
 	respName: string
 	checkableStatus?: string
 }) => {
 	const user = useAppSelector(state => state.auth.user)
 	const isEmpDemp = user?.roles.find(role => role.type === 'EMPL')
 	const { data: chatId = 0, isLoading: isChatIdLoading } =
-		useGetChatIdByRespondIdQuery(props.respondId)
+		useGetChatIdByRespondIdQuery({
+			chatId: props.respondId,
+			role: isEmpDemp ? 'PERSONNEL_DEPARTMENT' : 'SEEKER'
+		})
 	const { data: unreadCount, isLoading: isUnreadCountLoading } =
 		useGetUnreadMessagesCountQuery({
 			chatId: chatId,
@@ -47,8 +52,9 @@ export const ChatPreview = (props: {
 		} else {
 			dispatch(openChat())
 		}
-		dispatch(setChatId(1))
+		dispatch(setChatId(chatId))
 		dispatch(setRespondId(props.respondId))
+		dispatch(setCurrentVacancyId(props.vacancyId))
 		navigate(url)
 	}
 

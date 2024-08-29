@@ -27,7 +27,7 @@ export const VacancyResponces = () => {
 
 	return (
 		<>
-			<div className="w-full pl-[52px] pr-[52px] pt-[60px]">
+			<div className="w-full pl-[52px] pr-[52px] pt-[60px] mt-[60px]">
 				<div className="flex">
 					<button
 						onClick={() => {
@@ -116,13 +116,13 @@ export const VacancyResponces = () => {
 				</div>
 				<div className="flex mb-[16px] pl-[20px] pr-[55px]">
 					<h3 className="w-[25%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
-						Вакансия
+						ФИО
 					</h3>
 
-					<h3 className="ml-[5%] w-[8%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
+					<h3 className="ml-[10%] w-[8%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
 						Дата отклика
 					</h3>
-					<h3 className="ml-[5%] w-[25%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
+					<h3 className="ml-[1%] w-[25%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
 						Статус
 					</h3>
 				</div>

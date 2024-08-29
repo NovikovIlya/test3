@@ -190,11 +190,18 @@ export const serviceApi = apiSlice.injectEndpoints({
 				}
 			})
 		}),
-		getChatIdByRespondId: builder.query<number, number>({
-			query: respId => ({
-				url: `http://localhost:8082/employment-api/v1/respond/${respId}/chat`,
+		getChatIdByRespondId: builder.query<
+			number,
+			{ chatId: number; role: string }
+		>({
+			query: arg => ({
+				url: `http://localhost:8082/employment-api/v1/respond/${arg.chatId}/chat?sender=${arg.role}`,
 				headers: {
-					Authorization: `Bearer ${seekerToken}`
+					Authorization: `Bearer ${
+						arg.role === 'PERSONNEL_DEPARTMENT'
+							? personnelDeparmentToken
+							: seekerToken
+					}`
 				}
 			})
 		}),
@@ -205,7 +212,11 @@ export const serviceApi = apiSlice.injectEndpoints({
 			query: ({ chatId, role }) => ({
 				url: `http://localhost:8082/employment-api/v1/chat/${chatId}/unread-count?sender=${role}`,
 				headers: {
-					Authorization: `Bearer ${seekerToken}`
+					Authorization: `Bearer ${
+						role === 'PERSONNEL_DEPARTMENT'
+							? personnelDeparmentToken
+							: seekerToken
+					}`
 				}
 			}),
 			keepUnusedDataFor: 0
@@ -380,7 +391,10 @@ export const serviceApi = apiSlice.injectEndpoints({
 		deleteVacancyRespond: builder.mutation<void, number>({
 			query: id => ({
 				url: `http://localhost:8082/employment-api/v1/respond/${id}`,
-				method: 'DELETE'
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${seekerToken}`
+				}
 			})
 		}),
 		postChatMessage: builder.mutation<
@@ -490,9 +504,39 @@ export const serviceApi = apiSlice.injectEndpoints({
 				}
 			})
 		}),
-		acceptVacancyRequest: builder.mutation<void, number>({
+		acceptCreateVacancyRequest: builder.mutation<
+			void,
+			{
+				data: {
+					category: string
+					direction: string
+					subdivision: string
+					emplDocDefIds: number[]
+				}
+				requestId: number
+			}
+		>({
+			query: arg => ({
+				url: `http://localhost:8082/employment-api/v1/management/vacancy-requests/for-create/${arg.requestId}/acceptance`,
+				method: 'PUT',
+				body: arg.data,
+				headers: {
+					Authorization: `Bearer ${personnelDeparmentToken}`
+				}
+			})
+		}),
+		acceptUpdateVacancyRequest: builder.mutation<void, number>({
 			query: id => ({
-				url: `http://localhost:8082/employment-api/v1/management/vacancy-requests/${id}/accept`,
+				url: `http://localhost:8082/employment-api/v1/management/vacancy-requests/for-update/${id}/acceptance`,
+				method: 'PUT',
+				headers: {
+					Authorization: `Bearer ${personnelDeparmentToken}`
+				}
+			})
+		}),
+		acceptDeleteVacancyRequest: builder.mutation<void, number>({
+			query: id => ({
+				url: `http://localhost:8082/employment-api/v1/management/vacancy-requests/for-delete/${id}/acceptance`,
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${personnelDeparmentToken}`
@@ -521,12 +565,32 @@ export const serviceApi = apiSlice.injectEndpoints({
 				}
 			})
 		}),
-		sendRespondToArchive: builder.mutation<VacancyRespondItemType, number>({
-			query: id => ({
+		alterUpdateVacancyRequest: builder.mutation<
+			void,
+			VacancyRequestType & { vacancyRequestId: number }
+		>({
+			query: body => ({
+				url: `http://localhost:8082/employment-api/v1/management/vacancy-requests/for-update`,
+				method: 'PATCH',
+				body: body,
+				headers: {
+					Authorization: `Bearer ${personnelDeparmentToken}`
+				}
+			})
+		}),
+		sendRespondToArchive: builder.mutation<
+			VacancyRespondItemType,
+			{ id: number; role: string }
+		>({
+			query: ({ id, role }) => ({
 				url: `http://localhost:8082/employment-api/v1/respond/${id}/status/archive`,
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${personnelDeparmentToken}`
+					Authorization: `Bearer ${
+						role === 'PERSONNEL_DEPARTMENT'
+							? personnelDeparmentToken
+							: supervisorToken
+					}`
 				}
 			})
 		}),
@@ -574,8 +638,8 @@ export const serviceApi = apiSlice.injectEndpoints({
 			{ respondId: number; vacancyId: number }
 		>({
 			query: ({ respondId, vacancyId }) => ({
-				url: `http://localhost:8082/employment-api/v1/reserve/${respondId}/status/approve`,
-				method: 'PUT',
+				url: `http://localhost:8082/employment-api/v1/reserve/${respondId}/approve`,
+				method: 'POST',
 				body: {
 					vacancyId: vacancyId
 				},
@@ -586,7 +650,11 @@ export const serviceApi = apiSlice.injectEndpoints({
 		}),
 		editVacancyAsPerDepartment: builder.mutation<
 			void,
-			VacancyRequestType & { vacancyId: number }
+			VacancyRequestType & {
+				vacancyId: number
+				category: string
+				direction: string
+			}
 		>({
 			query: arg => ({
 				url: `http://localhost:8082/employment-api/v1/vacancy`,
@@ -614,6 +682,15 @@ export const serviceApi = apiSlice.injectEndpoints({
 				headers: {
 					Authorization: `Bearer ${supervisorToken}`
 				}
+			})
+		}),
+		deleteReserveRespond: builder.mutation<void, number>({
+			query: id => ({
+				url: `http://localhost:8082/employment-api/v1/reserve/${id}`,
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${personnelDeparmentToken}`
+					}
 			})
 		}),
 		getSupervisorInterview: builder.query<InterviewItemType[], void>({
@@ -721,7 +798,7 @@ export const {
 	useGetVacancyRequestsQuery,
 	useGetVacancyRequestViewQuery,
 	useLazyGetVacancyRequestViewQuery,
-	useAcceptVacancyRequestMutation,
+	useAcceptCreateVacancyRequestMutation,
 	useDenyVacancyRequestMutation,
 	useAlterCreateVacancyRequestMutation,
 	useGetArchivedResponcesQuery,
@@ -740,6 +817,10 @@ export const {
 	useRequestCreateInterviewMutation,
 	useLazyGetVacancyPreviewByDirectionQuery,
 	useLazyGetVacancyPreviewBySubdivisionQuery,
+	useAcceptUpdateVacancyRequestMutation,
+	useAcceptDeleteVacancyRequestMutation,
+	useDeleteReserveRespondMutation,
+	useAlterUpdateVacancyRequestMutation,
 	useGetSupervisorInterviewQuery,
 	useLazyGetInterviewViewQuery,
 	useEmployeeSeekerRequestMutation,

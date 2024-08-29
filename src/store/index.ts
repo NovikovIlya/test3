@@ -1,11 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import logger from 'redux-logger'
+
 import { apiSlice } from './api/apiSlice'
+import { practiceApi } from './api/practiceApi/practiceApi'
 import ChatRespondStatusSlice from './reducers/ChatRespondStatusSlice'
 import CurrentRequestSlice from './reducers/CurrentRequestSlice'
 import CurrentResponceSlice from './reducers/CurrentResponceSlice'
 import CurrentRespondIdSlice from './reducers/CurrentRespondIdSlice'
+import CurrentVacancyIdSlice from './reducers/CurrentVacancyIdSlice'
 import CurrentVacancyNameSlice from './reducers/CurrentVacancyNameSlice'
 import CurrentVacancySlice from './reducers/CurrentVacancySlice'
 import AddressReducer from './reducers/FormReducers/AddressReducer'
@@ -15,6 +18,10 @@ import EducationReducer from './reducers/FormReducers/EducationReducer'
 import FormReducer from './reducers/FormReducers/FormReducer'
 import InfoUserReducer from './reducers/FormReducers/InfoUserReducer'
 import ParentReducer from './reducers/FormReducers/ParentReducer'
+import SecretaryItemTabsReducer from './reducers/FormReducers/SecretaryItemTabsReducer'
+import SecretaryStepFormBusinessTrip from './reducers/FormReducers/SecretaryStepFormBusinessTrip'
+import StaffItemTabsReducer from './reducers/FormReducers/StaffItemTabsReducer'
+import StaffStepFormBusinessTrip from './reducers/FormReducers/StaffStepFormBusinessTrip'
 import WorkReducer from './reducers/FormReducers/WorkReducer'
 import LayoutSlice from './reducers/LayoutsSlice'
 import AboutMeReducer from './reducers/SeekerFormReducers/AboutMeReducer'
@@ -24,13 +31,7 @@ import RespondEducationReducer from './reducers/SeekerFormReducers/RespondEducat
 import SkillsReducer from './reducers/SeekerFormReducers/SkillsReducer'
 import authSlice from './reducers/authSlice'
 import chatIdSlice from './reducers/chatIdSlice'
-import StaffStepFormBusinessTrip from "./reducers/FormReducers/StaffStepFormBusinessTrip";
-import StaffItemTabsReducer from "./reducers/FormReducers/StaffItemTabsReducer";
-import SecretaryStepFormBusinessTrip from "./reducers/FormReducers/SecretaryStepFormBusinessTrip";
-import SecretaryItemTabsReducer from "./reducers/FormReducers/SecretaryItemTabsReducer";
-import {practiceApi} from "./api/practiceApi/practiceApi";
 import notificationSlice from './reducers/notificationSlice'
-
 
 export const store = configureStore({
 	reducer: {
@@ -62,7 +63,8 @@ export const store = configureStore({
 		SecretaryStepFormBusinessTrip: SecretaryStepFormBusinessTrip,
 		SecretaryItemTabs: SecretaryItemTabsReducer,
 		[practiceApi.reducerPath]: practiceApi.reducer,
-		[apiSlice.reducerPath]: apiSlice.reducer
+		[apiSlice.reducerPath]: apiSlice.reducer,
+		currentVacancyId: CurrentVacancyIdSlice
 	},
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware()

@@ -5,6 +5,7 @@ import { Margin, usePDF } from 'react-to-pdf'
 import uuid from 'react-uuid'
 
 import { AvatartandardSvg } from '../../../assets/svg/AvatarStandardSvg'
+import { RespondDownload } from '../../../assets/svg/RespondDownload'
 import { useAppSelector } from '../../../store'
 import {
 	useApproveRespondMutation,
@@ -35,11 +36,23 @@ export const RespondInfo = (props: {
 	const [isRespondSentToReserve, setIsRespondSentToReserve] = useState<boolean>(
 		res?.status === 'IN_RESERVE'
 	)
+	const [isRespondInvited, setIsRespondInvited] = useState<boolean>(
+		res?.status === 'INVITATION'
+	)
+	const [isRespondEmployed, setIsRespondEmployed] = useState<boolean>(
+		res?.status === 'EMPLOYMENT_REQUEST'
+	)
 
 	useEffect(() => {
-		setIsRespondSentToSupervisor(res?.status === 'IN_SUPERVISOR_REVIEW')
+		setIsRespondSentToSupervisor(
+			res?.status === 'IN_SUPERVISOR_REVIEW' ||
+				res?.status === 'INVITATION' ||
+				res?.status === 'EMPLOYMENT_REQUEST'
+		)
 		setIsRespondSentToArchive(res?.status === 'ARCHIVE')
 		setIsRespondSentToReserve(res?.status === 'IN_RESERVE')
+		setIsRespondInvited(res?.status === 'INVITATION')
+		setIsRespondEmployed(res?.status === 'EMPLOYMENT_REQUEST')
 	}, [res])
 
 	const navigate = useNavigate()
@@ -61,7 +74,7 @@ export const RespondInfo = (props: {
 	} else {
 		return (
 			<>
-				<div className="pl-[52px] pr-[10%] py-[60px] w-full">
+				<div className="pl-[52px] pr-[10%] py-[60px] mt-[60px] w-full">
 					<div>
 						<Button
 							onClick={() => {
@@ -130,7 +143,7 @@ export const RespondInfo = (props: {
 								</div>
 							</div>
 							{props.type === 'PERSONNEL_DEPARTMENT' && (
-								<div className="self-center grid grid-cols-2 grid-rows-[40px_40px] gap-x-[12px] gap-y-[12px]">
+								<div className="self-center grid grid-cols-2 grid-rows-[40px_40px_40px] gap-x-[12px] gap-y-[12px]">
 									<Button
 										onClick={() => {
 											approveRespond(respondId.respondId)
@@ -147,19 +160,26 @@ export const RespondInfo = (props: {
 									</Button>
 									<Button
 										onClick={() => {
-											sendToArchive(respondId.respondId)
+											sendToArchive({
+												id: respondId.respondId,
+												role: 'PERSONNEL_DEPARTMENT'
+											})
 												.unwrap()
 												.then(() => {
 													setIsRespondSentToArchive(true)
 												})
 										}}
-										disabled={isRespondSentToArchive}
+										disabled={
+											isRespondSentToArchive || isRespondSentToSupervisor
+										}
 										className="bg-inherit font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] w-[224px] h-[40px] py-[8px] px-[24px] border-black"
 									>
 										Отказать
 									</Button>
 									<Button
-										disabled={isRespondSentToReserve}
+										disabled={
+											isRespondSentToReserve || isRespondSentToSupervisor
+										}
 										onClick={() => {
 											sendToReserve(respondId.respondId)
 												.unwrap()
@@ -177,16 +197,42 @@ export const RespondInfo = (props: {
 									>
 										Перейти в чат
 									</Button>
+									<Button
+										onClick={() => toPDF()}
+										className="bg-inherit font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] w-[224px] h-[40px] py-[8px] px-[24px] border-black"
+									>
+										<RespondDownload /> Скачать
+									</Button>
 								</div>
 							)}
 							{props.type === 'SUPERVISOR' && (
-								<div className="self-center grid grid-cols-1 grid-rows-[40px_40px] gap-y-[12px]">
+								<div className="self-center grid grid-cols-1 grid-rows-[40px_40px_40px] gap-y-[12px]">
 									<InviteSeekerForm respondId={respondId.respondId} />
 									<Button
-										onClick={() => {}}
+										disabled={
+											isRespondSentToArchive ||
+											isRespondInvited ||
+											isRespondEmployed
+										}
+										onClick={() => {
+											sendToArchive({
+												id: respondId.respondId,
+												role: 'SUPERVISOR'
+											})
+												.unwrap()
+												.then(() => {
+													setIsRespondSentToArchive(true)
+												})
+										}}
 										className="bg-inherit font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] w-[257px] h-[40px] py-[8px] px-[24px] border-black"
 									>
 										Отказать
+									</Button>
+									<Button
+										onClick={() => toPDF()}
+										className="bg-inherit font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] w-[257px] h-[40px] py-[8px] px-[24px] border-black"
+									>
+										<RespondDownload /> Скачать
 									</Button>
 								</div>
 							)}
@@ -263,7 +309,7 @@ export const RespondInfo = (props: {
 										</p>
 										<div className="flex flex-col gap-[8px]">
 											<p className="font-content-font font-bold text-black text-[16px]/[19.2px]">
-												{edu.nameOfInstitute}
+												{edu.nameOfInstitute + ', ' + edu.country}
 											</p>
 											<p className="font-content-font font-normal text-black text-[16px]/[19.2px]">
 												{edu.speciality === null ? '' : edu.speciality + ', '}
@@ -273,6 +319,15 @@ export const RespondInfo = (props: {
 									</>
 								))}
 							</div>
+						</div>
+						<hr />
+						<div className="flex flex-col gap-[24px]">
+							<p className="font-content-font font-normal text-black text-[18px]/[21.6x] opacity-40">
+								О себе
+							</p>
+							<p className="font-content-font font-normal text-black text-[16px]/[19.2px]">
+								{res.respondData.skills.aboutMe}
+							</p>
 						</div>
 						<hr />
 						<div className="flex flex-col">
@@ -295,9 +350,6 @@ export const RespondInfo = (props: {
 								</div>
 							</div>
 						</div>
-					</div>
-					<div>
-						<Button onClick={() => toPDF()}>Скачать резюме</Button>
 					</div>
 				</div>
 			</>

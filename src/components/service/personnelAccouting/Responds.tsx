@@ -35,7 +35,7 @@ export const Responds = () => {
 		<>
 			<div
 				id="wrapper"
-				className="pl-[54px] pr-[54px] pt-[60px] w-full bg-content-gray"
+				className="pl-[54px] pr-[54px] pt-[60px] w-full bg-content-gray mt-[60px]"
 			>
 				<h1 className="font-content-font font-normal text-[28px]/[28px] text-black">
 					Отклики
@@ -115,12 +115,12 @@ export const Responds = () => {
 					}
 					value={secondOption}
 				/>
-				<div className="flex mt-[60px] mb-[16px] pl-[20px]">
-					<h3 className="w-[388px] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
+				<div className="flex items-center mt-[60px] mb-[16px] pl-[20px] pr-[55px]">
+					<h3 className="w-[35%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
 						Вакансия
 					</h3>
-					<h3 className="ml-[293px] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
-						Количество откликов
+					<h3 className="ml-[17%] w-[12%] font-content-font text-black font-normal text-[14px]/[14px] opacity-[60%]">
+						Кол-во откликов
 					</h3>
 				</div>
 				{responds.map(resp => (

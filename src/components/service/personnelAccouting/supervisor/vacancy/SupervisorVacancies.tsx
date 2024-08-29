@@ -15,7 +15,7 @@ export const SupervisorVacancies = () => {
 					<h3 className="w-[238px] shrink-0 font-content-font font-normal text-[14px]/[14px] text-text-gray">
 						Должность
 					</h3>
-					<div className="ml-[30px] flex gap-[25px]">
+					<div className="ml-[30px] flex gap-[40px]">
 						<h3 className="w-[104px] font-content-font font-normal text-[14px]/[14px] text-text-gray">
 							Опыт работы
 						</h3>

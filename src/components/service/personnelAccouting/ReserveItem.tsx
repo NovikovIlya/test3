@@ -69,8 +69,8 @@ export const ReserveItem = (props: {
 				</Modal>
 			</ConfigProvider>
 			<div className="w-full mb-[12px] flex items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
-				<p className="min-w-[20%]">{props.post}</p>
-				<p className="ml-[5%] min-w-[15%]">{props.name}</p>
+				<p className="w-[30%]">{props.post}</p>
+				<p className="ml-[5%] w-[20%]">{props.name}</p>
 				<p className="ml-[5%] w-[8%]">
 					{props.respondDate.split('-').reverse().join('.')}
 				</p>
@@ -79,12 +79,12 @@ export const ReserveItem = (props: {
 						dispatch(setCurrentResponce(props.id))
 						navigate('services/personnelaccounting/reserve/fullinfo')
 					}}
-					className="ml-[25%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
+					className="ml-[10%] max-w-[15%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
 				>
 					Подробнее
 				</Button>
 				<Button
-					className="ml-[5%]"
+					className="ml-auto max-w-[5%]"
 					onClick={() => {
 						setModalOpen(true)
 					}}

@@ -64,14 +64,14 @@ export const RespondItem = (props: RespondItemType & { refetch: Function }) => {
 				</Modal>
 			</ConfigProvider>
 			<div className="w-full mb-[12px] flex items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
-				<p className="min-w-[25%]">{props.name}</p>
-				<p className="ml-[5%] min-w-[8%]">
+				<p className="w-[25%]">{props.name}</p>
+				<p className="ml-[5%] w-[8%]">
 					{props.respondDate.split('-').reverse().join('.')}
 				</p>
-				<p className="ml-[5%] w-[25%]">
+				<p className="ml-[2%] w-[25%]">
 					{props.status ===
 					respondStatus[respondStatus.IN_PERSONNEL_DEPT_REVIEW]
-						? 'на рассмотрении у управления кадрами'
+						? 'на рассмотрении у HR'
 						: props.status === respondStatus[respondStatus.IN_SUPERVISOR_REVIEW]
 						? 'на рассмотрении у руководителя'
 						: props.status === respondStatus[respondStatus.INVITATION]
@@ -81,7 +81,7 @@ export const RespondItem = (props: RespondItemType & { refetch: Function }) => {
 						: 'отказано'}
 				</p>
 				<Button
-					className="ml-[5%] rounded-[54px] font-content-font font-normal text-[16px]/[16px]"
+					className="ml-[5%] max-w-[15%] rounded-[54px] font-content-font font-normal text-[16px]/[16px]"
 					type="primary"
 					onClick={() => {
 						dispatch(setCurrentResponce(props.id))
@@ -94,12 +94,12 @@ export const RespondItem = (props: RespondItemType & { refetch: Function }) => {
 					onClick={() => {
 						navigate('/services/myresponds/chat')
 					}}
-					className="ml-[1%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
+					className="ml-[1%] max-w-[15%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
 				>
 					Перейти в чат
 				</Button>
 				<Button
-					className="ml-[1%]"
+					className="ml-[1%] rounded-[54.5px] border-solid border-black !px-[16px] !py-[7px] !w-[50px]"
 					onClick={() => {
 						setModalOpen(true)
 					}}

@@ -1,9 +1,11 @@
-import { Button, Tag } from 'antd'
+import { Button, ConfigProvider, Modal, Tag } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Margin, usePDF } from 'react-to-pdf'
 import uuid from 'react-uuid'
 
 import { AvatartandardSvg } from '../../../assets/svg/AvatarStandardSvg'
+import { RespondDownload } from '../../../assets/svg/RespondDownload'
 import { useAppSelector } from '../../../store'
 import {
 	useApproveArchivedRespondMutation,
@@ -27,6 +29,7 @@ export const ArchiveRespondInfo = (props: {
 
 	const [isRespondSentToSupervisor, setIsRespondSentToSupervisor] =
 		useState<boolean>(res?.status === 'IN_SUPERVISOR_REVIEW')
+	const [isModalOpen, setModalOpen] = useState(false)
 
 	useEffect(() => {
 		setIsRespondSentToSupervisor(res?.status === 'IN_SUPERVISOR_REVIEW')
@@ -34,12 +37,72 @@ export const ArchiveRespondInfo = (props: {
 
 	const navigate = useNavigate()
 
+	const { toPDF, targetRef } = usePDF({
+		filename:
+			res?.userData?.lastname +
+			' ' +
+			res?.userData?.firstname +
+			' ' +
+			res?.userData?.middlename,
+		page: {
+			margin: Margin.SMALL
+		}
+	})
+
 	if (res === undefined) {
 		return <></>
 	} else {
 		return (
 			<>
-				<div className="pl-[52px] pr-[10%] py-[60px] w-full">
+				<ConfigProvider
+					theme={{
+						token: {
+							boxShadow: '0 0 19px 0 rgba(212, 227, 241, 0.6)'
+						}
+					}}
+				>
+					<Modal
+						bodyStyle={{ padding: 53 }}
+						centered
+						open={isModalOpen}
+						onCancel={() => {
+							setModalOpen(false)
+						}}
+						title={null}
+						footer={null}
+						width={407}
+					>
+						<p className="font-content-font font-normal text-black text-[16px]/[20px] text-center">
+							Вы действительно хотите удалить отклик?
+						</p>
+						<div className="mt-[40px] flex gap-[12px]">
+							<Button
+								className="ml-auto"
+								onClick={() => {
+									setModalOpen(false)
+								}}
+							>
+								Отменить
+							</Button>
+							<Button
+								type="primary"
+								className="rounded-[54.5px] mr-auto"
+								onClick={() => {
+									deleteRespond(respondId.respondId)
+										.unwrap()
+										.then(() => {
+											refetch().then(() => {
+												navigate('/services/personnelaccounting/reserve')
+											})
+										})
+								}}
+							>
+								Удалить
+							</Button>
+						</div>
+					</Modal>
+				</ConfigProvider>
+				<div className="pl-[52px] pr-[10%] py-[60px] w-full mt-[60px]">
 					<div>
 						<Button
 							onClick={() => {
@@ -55,7 +118,7 @@ export const ArchiveRespondInfo = (props: {
 							Назад
 						</Button>
 					</div>
-					<div className="mt-[52px] flex flex-col gap-[36px]">
+					<div className="mt-[52px] flex flex-col gap-[36px]" ref={targetRef}>
 						<div className="flex flex-wrap gap-[150px]">
 							<div className="flex gap-[20px]">
 								<div className="flex h-[167px] w-[167px] bg-[#D9D9D9]">
@@ -106,7 +169,7 @@ export const ArchiveRespondInfo = (props: {
 								</div>
 							</div>
 							{props.type === 'PERSONNEL_DEPARTMENT' && (
-								<div className="self-center flex flex-col gap-[12px]">
+								<div className="self-center grid grid-cols-2 grid-rows-[40px_40px] gap-[12px]">
 									<Button
 										onClick={() => {
 											approveRespond(respondId.respondId)
@@ -131,16 +194,17 @@ export const ArchiveRespondInfo = (props: {
 									</Button>
 									<Button
 										onClick={() => {
-											deleteRespond(respondId.respondId)
-												.unwrap()
-												.then(() => {
-													refetch()
-													navigate('/services/personnelaccounting/archive')
-												})
+											setModalOpen(true)
 										}}
 										className="bg-inherit font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] w-[224px] h-[40px] py-[8px] px-[24px] border-black"
 									>
 										Удалить
+									</Button>
+									<Button
+										onClick={() => toPDF()}
+										className="bg-inherit font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] w-[224px] h-[40px] py-[8px] px-[24px] border-black"
+									>
+										<RespondDownload /> Скачать
 									</Button>
 								</div>
 							)}
@@ -155,6 +219,15 @@ export const ArchiveRespondInfo = (props: {
 									</Button>
 								</div>
 							)}
+						</div>
+						<hr />
+						<div className="flex flex-col gap-[24px]">
+							<p className="font-content-font font-normal text-black text-[18px]/[21.6x] opacity-40">
+								Сопроводительное письмо
+							</p>
+							<p className="font-content-font font-normal text-black text-[16px]/[19.2px]">
+								{res.respondData.coverLetter}
+							</p>
 						</div>
 						<hr />
 						<div className="flex flex-col gap-[24px]">
@@ -219,7 +292,7 @@ export const ArchiveRespondInfo = (props: {
 										</p>
 										<div className="flex flex-col gap-[8px]">
 											<p className="font-content-font font-bold text-black text-[16px]/[19.2px]">
-												{edu.nameOfInstitute}
+												{edu.nameOfInstitute + ', ' + edu.country}
 											</p>
 											<p className="font-content-font font-normal text-black text-[16px]/[19.2px]">
 												{edu.speciality === null ? '' : edu.speciality + ', '}
@@ -231,14 +304,20 @@ export const ArchiveRespondInfo = (props: {
 							</div>
 						</div>
 						<hr />
+						<div className="flex flex-col gap-[24px]">
+							<p className="font-content-font font-normal text-black text-[18px]/[21.6x] opacity-40">
+								О себе
+							</p>
+							<p className="font-content-font font-normal text-black text-[16px]/[19.2px]">
+								{res.respondData.skills.aboutMe}
+							</p>
+						</div>
+						<hr />
 						<div className="flex flex-col">
 							<p className="font-content-font font-normal text-black text-[18px]/[21.6x] opacity-40 w-[194px]">
 								Профессиональные навыки
 							</p>
 							<div className="grid grid-cols-[194px_auto] gap-x-[20px] w-[90%]">
-								{/* <div className="col-start-2">
-									{res.respondData.skills.aboutMe}
-								</div> */}
 								<div className="col-start-2 mt-[111px] flex gap-[8px] flex-wrap">
 									{res.respondData.skills.keySkills.map(skill => (
 										<Tag

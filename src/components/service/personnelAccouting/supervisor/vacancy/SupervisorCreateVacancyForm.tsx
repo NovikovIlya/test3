@@ -1,5 +1,6 @@
 import { Button, ConfigProvider, Form, Input, Modal, Select } from 'antd'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import {
 	useGetCategoriesQuery,
@@ -18,6 +19,8 @@ export const SupervisorCreateVacancyForm = () => {
 
 	const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
 
+	const navigate = useNavigate()
+
 	return (
 		<>
 			<ConfigProvider
@@ -33,6 +36,7 @@ export const SupervisorCreateVacancyForm = () => {
 					open={isSuccessModalOpen}
 					onCancel={() => {
 						setIsSuccessModalOpen(false)
+						navigate('/services/personnelaccounting/supervisor/vacancies')
 					}}
 					title={null}
 					footer={null}
@@ -48,6 +52,7 @@ export const SupervisorCreateVacancyForm = () => {
 							type="primary"
 							onClick={() => {
 								setIsSuccessModalOpen(false)
+								navigate('/services/personnelaccounting/supervisor/vacancies')
 							}}
 						>
 							ОК
@@ -55,14 +60,14 @@ export const SupervisorCreateVacancyForm = () => {
 					</div>
 				</Modal>
 			</ConfigProvider>
-			<div className="pl-[54px] pr-[54px] pt-[120px] w-full bg-content-gray">
+			<div className="pl-[54px] pr-[54px] pb-[52px] pt-[120px] w-full bg-content-gray">
 				<h1 className="font-content-font font-normal text-[28px]/[28px] text-black">
 					Создать вакансию
 				</h1>
 				<Form
 					layout="vertical"
 					requiredMark={false}
-					className="w-[50%] mt-[52px]"
+					className="w-[52%] mt-[52px]"
 					onFinish={values => {
 						requestCreateVacancy(values)
 							.unwrap()
@@ -74,7 +79,7 @@ export const SupervisorCreateVacancyForm = () => {
 					<Form.Item
 						name={'post'}
 						label={
-							<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+							<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 								Должность
 							</label>
 						}
@@ -86,7 +91,7 @@ export const SupervisorCreateVacancyForm = () => {
 						<Form.Item
 							name={'experience'}
 							label={
-								<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+								<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 									Требуемый опыт работы
 								</label>
 							}
@@ -95,16 +100,17 @@ export const SupervisorCreateVacancyForm = () => {
 							<Select
 								placeholder="Выбрать"
 								options={[
-									{ value: '0', label: '0' },
-									{ value: '1', label: '1' },
-									{ value: '2', label: '2' }
+									{ value: 'Нет опыта', label: 'Нет опыта' },
+									{ value: 'Опыт от 1 до 3 лет', label: 'Опыт от 1 до 3 лет' },
+									{ value: 'Опыт от 3 до 6 лет', label: 'Опыт от 3 до 6 лет' },
+									{ value: 'Опыт более 6 лет', label: 'Опыт более 6 лет' }
 								]}
 							></Select>
 						</Form.Item>
 						<Form.Item
 							name={'employment'}
 							label={
-								<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+								<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 									Тип занятости
 								</label>
 							}
@@ -113,16 +119,17 @@ export const SupervisorCreateVacancyForm = () => {
 							<Select
 								placeholder="Выбрать"
 								options={[
-									{ value: 'Полный день', label: 'Полный день' },
-									{ value: 'Пол ставки', label: 'Пол ставки' },
-									{ value: 'Четверть ставки', label: 'Четверть ставки' }
+									{ value: 'Полный график', label: 'Полный график' },
+									{ value: 'Гибкий график', label: 'Гибкий график' },
+									{ value: 'Сменный график', label: 'Сменный график' },
+									{ value: 'Удалённая работа', label: 'Удалённая работа' }
 								]}
 							></Select>
 						</Form.Item>
 						<Form.Item
 							name={'salary'}
 							label={
-								<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+								<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 									Заработная плата
 								</label>
 							}
@@ -134,7 +141,7 @@ export const SupervisorCreateVacancyForm = () => {
 					<Form.Item
 						name={'responsibilities'}
 						label={
-							<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+							<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 								Задачи
 							</label>
 						}
@@ -149,7 +156,7 @@ export const SupervisorCreateVacancyForm = () => {
 					<Form.Item
 						name={'skills'}
 						label={
-							<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+							<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 								Требования
 							</label>
 						}
@@ -164,7 +171,7 @@ export const SupervisorCreateVacancyForm = () => {
 					<Form.Item
 						name={'conditions'}
 						label={
-							<label className="text-black text-[18px]/[18px] font-content-font font-normal">
+							<label className="text-black text-[18px]/[18px] font-content-font font-normal opacity-80">
 								Условия
 							</label>
 						}
@@ -176,53 +183,6 @@ export const SupervisorCreateVacancyForm = () => {
 							placeholder="Ввести текст..."
 						></Input.TextArea>
 					</Form.Item>
-					<div className="flex gap-[20px] w-full">
-						<Form.Item
-							name={'category'}
-							label={
-								<label className="text-black text-[18px]/[18px] font-content-font font-normal">
-									Категория сотрудников
-								</label>
-							}
-							rules={[{ required: true, message: 'Не указана категория' }]}
-						>
-							<Select
-								placeholder="Выбрать"
-								options={categories.map(category => ({
-									value: category.title,
-									label: category.title
-								}))}
-								onChange={e => setCategoryTitle(e)}
-							></Select>
-						</Form.Item>
-						<Form.Item
-							name={'direction'}
-							label={
-								<label className="text-black text-[18px]/[18px] font-content-font font-normal">
-									{categories.find(cat => cat.title === categoryTitle)
-										?.direction
-										? 'Профобласть'
-										: 'Подразделение'}
-								</label>
-							}
-							rules={[{ required: true, message: 'Не указана подкатегория' }]}
-						>
-							<Select
-								placeholder="Выбрать"
-								options={
-									categories.find(cat => cat.title === categoryTitle)?.direction
-										? directions.map(dir => ({
-												value: dir.title,
-												label: dir.title
-										  }))
-										: subdivisions.map(sub => ({
-												value: sub.title,
-												label: sub.title
-										  }))
-								}
-							></Select>
-						</Form.Item>
-					</div>
 					<Form.Item>
 						<Button type="primary" htmlType="submit">
 							Отправить

@@ -108,7 +108,7 @@ export default function VacancyItem(props: VacancyItemType) {
 				<p className="w-[238px] shrink-0 font-content-font font-normal text-[16px]/[19px] text-black">
 					{props.title}
 				</p>
-				<div className="ml-[30px] flex gap-[25px] justify-between">
+				<div className="ml-[30px] flex gap-[40px] justify-between">
 					<p className="w-[104px] font-content-font font-normal text-[16px]/[19px] text-black whitespace-nowrap">
 						{props.experience}
 					</p>

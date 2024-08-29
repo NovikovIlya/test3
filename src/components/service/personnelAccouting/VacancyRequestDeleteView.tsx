@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { useAppSelector } from '../../../store'
 import {
-	useAcceptVacancyRequestMutation,
-	useDenyVacancyRequestMutation
+	useAcceptDeleteVacancyRequestMutation,
+	useGetVacancyRequestsQuery
 } from '../../../store/api/serviceApi'
 import ArrowIcon from '../jobSeeker/ArrowIcon'
 
@@ -14,8 +14,9 @@ export const VacancyRequestDeleteView = () => {
 	const { requestId } = useAppSelector(state => state.currentRequest)
 
 	const navigate = useNavigate()
-	const [acceptRequest] = useAcceptVacancyRequestMutation()
-	const [denyRequest] = useDenyVacancyRequestMutation()
+	const [acceptRequest] = useAcceptDeleteVacancyRequestMutation()
+
+	const { refetch } = useGetVacancyRequestsQuery('все')
 
 	const [post, setPost] = useState<string | undefined>(
 		currentVacancy?.title.rendered
@@ -89,7 +90,10 @@ export const VacancyRequestDeleteView = () => {
 
 	return (
 		<>
-			<div id="wrapper" className="pl-[54px] pr-[54px] pt-[60px] w-full">
+			<div
+				id="wrapper"
+				className="pl-[54px] pr-[54px] pt-[120px] pb-[52px] w-full"
+			>
 				<div className="flex">
 					<button
 						onClick={() => {
@@ -184,33 +188,22 @@ export const VacancyRequestDeleteView = () => {
 							</p>
 						</div>
 					</div>
-					<div className="flex gap-[20px]">
-						<Button
-							onClick={() => {
-								denyRequest(requestId)
-									.unwrap()
-									.then(() => {
-										navigate('/services/personnelaccounting/vacancyrequests')
-									})
-							}}
-							className="w-[151px] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black bg-inherit"
-						>
-							Отклонить
-						</Button>
-						<Button
-							onClick={() => {
-								acceptRequest(requestId)
-									.unwrap()
-									.then(() => {
-										navigate('/services/personnelaccounting/vacancyrequests')
-									})
-							}}
-							type="primary"
-							className="rounded-[54.5px] w-[121px]"
-						>
-							Удалить
-						</Button>
-					</div>
+					<Button
+						onClick={() => {
+							acceptRequest(requestId)
+								.unwrap()
+								.then(() => {
+									refetch()
+								})
+								.then(() => {
+									navigate('/services/personnelaccounting/vacancyrequests')
+								})
+						}}
+						type="primary"
+						className="rounded-[54.5px] w-[121px]"
+					>
+						Удалить
+					</Button>
 				</div>
 			</div>
 		</>

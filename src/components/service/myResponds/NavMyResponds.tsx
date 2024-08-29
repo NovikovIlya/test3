@@ -64,14 +64,12 @@ export const NavMyResponds = () => {
 					{handleList}
 				</ul>
 			</div>
-			<WrapperForServices>
-				{pathname === navList[0].id && <MyResponds />}
-				{pathname === navList[0].id + '/fullinfo' && (
-					<RespondInfo type="SEEKER" />
-				)}
-				{pathname.includes(navList[1].id) && <Chat />}
-				{pathname === navList[2].id && <Employment />}
-			</WrapperForServices>
+			{pathname === navList[0].id && <MyResponds />}
+			{pathname === navList[0].id + '/fullinfo' && (
+				<RespondInfo type="SEEKER" />
+			)}
+			{pathname.includes(navList[1].id) && <Chat />}
+			{pathname === navList[2].id && <Employment />}
 		</>
 	)
 }

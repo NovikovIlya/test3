@@ -424,8 +424,12 @@ export const ResponseForm = () => {
 											educations: educationData.educations.map(edu => ({
 												institution: edu.education.nameofInstitute,
 												endYear: parseInt(edu.education.graduateYear),
-												country: 'РФ',
-												educationLevel: 'Высшее',
+												country: countries?.find(
+													cou => cou.id === edu.education.countryId
+												)?.shortName!,
+												educationLevel: levels?.find(
+													educ => educ.id === edu.education.educationLevelId
+												)?.name!,
 												speciality: edu.education.specialization
 											})),
 											portfolio: {
@@ -1152,7 +1156,80 @@ export const ResponseForm = () => {
 												{exp.experience.workplace}
 											</p>
 											<p className="font-content-font text-black text-[14px]/[14px] font-normal select-none opacity-60">
-												{exp.experience.beginWork} - {exp.experience.endWork}
+												{dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+													.toDate()
+													.getMonth() +
+													1 <
+												10
+													? '0' +
+													  (dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+															.toDate()
+															.getMonth() +
+															1)
+													: dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+															.toDate()
+															.getMonth() + 1}
+												.
+												{dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+													.toDate()
+													.getFullYear()}{' '}
+												-{' '}
+												{dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+													.toDate()
+													.getFullYear() === date.getFullYear() &&
+												dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+													.toDate()
+													.getMonth() === date.getMonth()
+													? 'по наст.время'
+													: dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+															.toDate()
+															.getMonth() +
+													  1 +
+													  '.' +
+													  dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+															.toDate()
+															.getFullYear()}{' '}
+												{/* {dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+													.toDate()
+													.getFullYear() -
+													dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+														.toDate()
+														.getFullYear() ===
+												0
+													? ''
+													: dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+															.toDate()
+															.getFullYear() -
+															(dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+																.toDate()
+																.getFullYear() %
+																10) ===
+													  1
+													? '1 год'
+													: dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+															.toDate()
+															.getFullYear() -
+															(dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+																.toDate()
+																.getFullYear() %
+																10) <=
+													  4
+													? `${
+															dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+																.toDate()
+																.getFullYear() -
+															dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+																.toDate()
+																.getFullYear()
+													  } года`
+													: `${
+															dayjs(exp.experience.endWork, 'DD.MM.YYYY')
+																.toDate()
+																.getFullYear() -
+															dayjs(exp.experience.beginWork, 'DD.MM.YYYY')
+																.toDate()
+																.getFullYear()
+													  } лет`} */}
 											</p>
 										</div>
 										<div className="flex gap-[12px]">

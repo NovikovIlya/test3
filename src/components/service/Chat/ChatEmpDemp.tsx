@@ -8,6 +8,7 @@ import {
 	useLazyGetVacancyGroupedResponcesQuery
 } from '../../../store/api/serviceApi'
 import { VacancyRespondItemType } from '../../../store/reducers/type'
+import VacancyView from '../jobSeeker/VacancyView'
 
 import { ChatPage } from './ChatPage'
 import { ChatPreview } from './ChatPreview'
@@ -44,6 +45,7 @@ export const ChatEmpDemp = () => {
 		return (
 			<ChatPreview
 				respondId={resp.id}
+				vacancyId={resp.id}
 				respName={resp.vacancyName}
 				key={resp.id}
 			/>
@@ -53,17 +55,22 @@ export const ChatEmpDemp = () => {
 	return (
 		<>
 			{' '}
-			<div className="shadowNav bg-white relative z-[5]">
-				<div className="sticky top-[80px]">
-					<div className="">
-						<p className="pl-[53px] pt-14 pb-[40px] font-content-font font-normal text-black text-[20px]/[20px] ">
-							Все отклики
-						</p>
+			{!pathname.includes('/services/personnelaccounting/chat/vacancyview') && (
+				<div className="shadowNav bg-white relative z-[5] mt-[60px]">
+					<div className="sticky top-[80px]">
+						<div className="">
+							<p className="pl-[53px] pt-14 pb-[40px] font-content-font font-normal text-black text-[20px]/[20px] ">
+								Все отклики
+							</p>
+						</div>
+						<ul className="w-[461px] flex flex-col gap-4">{handleList}</ul>
 					</div>
-					<ul className="w-[461px] flex flex-col gap-4">{handleList}</ul>
 				</div>
-			</div>
+			)}
 			{pathname.match('services/personnelaccounting/chat/id/*') && <ChatPage />}
+			{pathname.includes('/services/personnelaccounting/chat/vacancyview') && (
+				<VacancyView type="CHAT" />
+			)}
 		</>
 	)
 }

@@ -21,7 +21,7 @@ export const VacancyRespondItem = (
 	return (
 		<>
 			<div className="w-full mb-[12px] flex items-center bg-white shadow-custom-shadow pl-[20px] pr-[55px] pt-[20px] pb-[20px]">
-				<p className="min-w-[25%]">
+				<p className="w-[25%]">
 					{props.userData
 						? props.userData.lastname +
 						  ' ' +
@@ -32,10 +32,10 @@ export const VacancyRespondItem = (
 				</p>
 				{props.itemType === 'PERSONNEL_DEPARTMENT' ? (
 					<>
-						<p className="ml-[5%] min-w-[8%]">
+						<p className="ml-[10%] w-[8%]">
 							{props.responseDate.split('-').reverse().join('.')}
 						</p>
-						<p className="ml-[5%] min-w-[25%]">
+						<p className="ml-[1%] w-[25%]">
 							{props.status ===
 							respondStatus[respondStatus.IN_PERSONNEL_DEPT_REVIEW]
 								? 'на рассмотрении у отдела кадров'
@@ -51,8 +51,8 @@ export const VacancyRespondItem = (
 					</>
 				) : (
 					<>
-						<p className="ml-[5%] min-w-[15%]">{props.vacancyName}</p>
-						<p className="ml-[5%] min-w-[8%]">
+						<p className="ml-[5%] w-[25%]">{props.vacancyName}</p>
+						<p className="ml-[5%] w-[8%]">
 							{props.responseDate.split('-').reverse().join('.')}
 						</p>
 					</>
@@ -66,7 +66,7 @@ export const VacancyRespondItem = (
 									'services/personnelaccounting/supervisor/responds/fullinfo'
 							  )
 					}}
-					className="ml-[15%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
+					className="ml-[10%] max-w-[15%] font-content-font font-normal text-black text-[16px]/[16px] rounded-[54.5px] py-[8px] px-[24px] border-black"
 				>
 					Подробнее
 				</Button>

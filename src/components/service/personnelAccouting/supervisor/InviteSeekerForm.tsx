@@ -23,6 +23,9 @@ export const InviteSeekerForm = (props: { respondId: number }) => {
 
 	const [inviteSeeker] = useInviteSeekerMutation()
 
+	const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false)
+	const [resultModalText, setResultModalText] = useState<string>('')
+
 	return (
 		<>
 			<Button
@@ -35,6 +38,41 @@ export const InviteSeekerForm = (props: { respondId: number }) => {
 			>
 				Пригласить на собеседование
 			</Button>
+			<ConfigProvider
+				theme={{
+					token: {
+						boxShadow: '0 0 19px 0 rgba(212, 227, 241, 0.6)'
+					}
+				}}
+			>
+				<Modal
+					bodyStyle={{
+						padding: '26px'
+					}}
+					width={407}
+					className="pr-[52px] pl-[52px] pb-[52px]"
+					open={isResultModalOpen}
+					title={null}
+					footer={null}
+					centered
+					onCancel={() => {
+						setIsResultModalOpen(false)
+					}}
+				>
+					<p className="text-center font-content-font text-black text-[16px]/[20px] font-normal">
+						{resultModalText}
+					</p>
+					<Button
+						className="rounded-[40px] w-full !py-[13px] mt-[40px]"
+						type="primary"
+						onClick={() => {
+							setIsResultModalOpen(false)
+						}}
+					>
+						Ок
+					</Button>
+				</Modal>
+			</ConfigProvider>
 			<ConfigProvider
 				theme={{
 					token: {
@@ -154,7 +192,20 @@ export const InviteSeekerForm = (props: { respondId: number }) => {
 								.unwrap()
 								.then(() => {
 									setIsFormOpen(false)
+									setResultModalText('Приглашение успешно отправлено')
+									setIsResultModalOpen(true)
 									setIsButtonDisabled(true)
+								})
+								.catch(error => {
+									try {
+										setResultModalText(error.data.errors[0].message as string)
+									} catch (err) {
+										setResultModalText(
+											'Что-то пошло не так, приносим извинения за неудобства'
+										)
+									}
+									setIsFormOpen(false)
+									setIsResultModalOpen(true)
 								})
 						}}
 					>
@@ -278,7 +329,7 @@ export const InviteSeekerForm = (props: { respondId: number }) => {
 						<Form.Item>
 							<div style={{ textAlign: 'right', marginTop: 40 }}>
 								<Button type="primary" htmlType="submit">
-									Сохранить
+									Пригласить
 								</Button>
 							</div>
 						</Form.Item>
